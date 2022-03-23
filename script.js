@@ -14,8 +14,7 @@ function computerPlay() {
 }
 
 //odlucuje pobjednika i returna rezultat(reza)
-function runda() {
-    let user = prompt()
+function runda(user) {
     let computer = computerPlay()
     user = user.toLowerCase()
     console.log(user, computer)
@@ -44,22 +43,82 @@ function runda() {
                 break;
         } 
     } 
-    return reza 
+    return reza;
 }
 
-function game() {
-    let playerScore = 0
-    let computerScore = 0
-    for (let i = 0; i < 5 ; i++) {
-        let reza = runda()
-        if (reza === 'Victory') {
-            playerScore++
-        } else if (reza === 'Defeat') {
-            computerScore++
+function countScore(buttonid){
+    let result = runda(buttonid);
+        switch (result) {
+            case 'Victory':
+                userScore++;
+                break;
+            
+            case 'Defeat':
+                computerScore++;
+                break;
+        
+            default:
+                break;
         }
-        console.log(reza)
-        console.log(`Player ${playerScore}:${computerScore} Computer`)
-    }
+    return result;
 }
 
-game()
+function gameOver(user, comp){
+    if (user > comp) return 'Pobijeda';
+    return 'Poraz';
+}
+
+function replaceButtons(){
+    buttons.forEach((button) => {
+        button.parentNode.removeChild(button);
+    });
+    reset.textContent = 'Reset';
+    container.appendChild(reset);
+}   
+
+function placeButtons(){
+    botunKamen.textContent = 'Kamen';
+    botunKamen.setAttribute('id', 'kamen');
+    container.appendChild(botunKamen);
+    botunSkare.textContent = 'Skare';
+    botunSkare.setAttribute('id', 'skare');
+    container.appendChild(botunSkare);
+    botunPapir.textContent = 'Papir';
+    botunPapir.setAttribute('id', 'papir');
+    container.appendChild(botunPapir);
+    
+}
+
+const buttons = document.querySelectorAll('.container > button');
+const rezultat = document.querySelector('#rezultat');
+const container = document.querySelector('.container');
+const reset = document.createElement('button');
+const botunKamen = document.createElement('button');
+const botunSkare = document.createElement('button');
+const botunPapir = document.createElement('button');
+
+let userScore = 0;
+let computerScore = 0;
+let bestOf = 5;
+
+
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        let result = countScore(button.id);
+        rezultat.textContent = `User ${userScore}:${computerScore} Computer`;
+        if (userScore >= bestOf || computerScore >= bestOf) {
+            rezultat.textContent = gameOver(userScore, computerScore);
+            //replaceButtons();
+        }
+    });
+});
+
+// reset.addEventListener('click', () => {
+//     userScore = 0;
+//     computerScore = 0;
+//     reset.parentNode.removeChild(reset);
+//     placeButtons();
+//     rezultat.textContent = ``;
+    
+// });
